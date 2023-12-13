@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://mbl0cq2eefb2"]
+
+[ext_resource type="Script" path="res://card.gd" id="1_pw13d"]
+[ext_resource type="Script" path="res://card_sprite.gd" id="6_2sewk"]
+[ext_resource type="Texture2D" uid="uid://ddnub4xg4ehbg" path="res://artwork/cards/solitaire_spritesheet.png" id="6_7rjg6"]
+
+[node name="Card" type="Button"]
+custom_minimum_size = Vector2(88, 124)
+size_flags_vertical = 0
+focus_mode = 0
+flat = true
+script = ExtResource("1_pw13d")
+
+[node name="CardSprite" type="Sprite2D" parent="."]
+texture = ExtResource("6_7rjg6")
+centered = false
+hframes = 13
+vframes = 4
+region_rect = Rect2(10, 14, 105, 145)
+script = ExtResource("6_2sewk")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="button_up" from="." to="." method="_on_button_up"]
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]

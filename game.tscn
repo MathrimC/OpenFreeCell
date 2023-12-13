@@ -1,0 +1,952 @@
+[gd_scene load_steps=21 format=3 uid="uid://ssi8qn4aqiry"]
+
+[ext_resource type="Texture2D" uid="uid://b801ytd73ub2q" path="res://artwork/board/cell.png" id="1_1maw1"]
+[ext_resource type="Script" path="res://board.gd" id="1_61gtw"]
+[ext_resource type="Texture2D" uid="uid://2g8ax888qqx6" path="res://artwork/board/background.png" id="2_85hxy"]
+[ext_resource type="Script" path="res://cell.gd" id="2_xf0fn"]
+[ext_resource type="Theme" uid="uid://cu3iwi035266x" path="res://label_theme.theme" id="3_07em3"]
+[ext_resource type="Script" path="res://undo.gd" id="4_6cew4"]
+[ext_resource type="Script" path="res://deal_nbr.gd" id="4_igxoy"]
+[ext_resource type="Script" path="res://game_stats.gd" id="5_1ul02"]
+[ext_resource type="Script" path="res://settings_button.gd" id="6_00bmi"]
+[ext_resource type="Texture2D" uid="uid://bkgy7t27ictt6" path="res://artwork/icons/undo.png" id="6_6pe30"]
+[ext_resource type="Texture2D" uid="uid://nkwynw8v67x4" path="res://artwork/icons/settings.png" id="7_t0b35"]
+[ext_resource type="Script" path="res://deal_menu.gd" id="8_ohcwr"]
+[ext_resource type="Script" path="res://deal_button.gd" id="10_dvi0k"]
+[ext_resource type="Script" path="res://stats_popup.gd" id="15_eq6we"]
+[ext_resource type="Script" path="res://settings_popup.gd" id="15_os37y"]
+[ext_resource type="Script" path="res://victory_popup.gd" id="16_ifrha"]
+[ext_resource type="PackedScene" uid="uid://dan5llmvjq3e8" path="res://game_timer.tscn" id="16_mhao6"]
+[ext_resource type="AudioStream" uid="uid://bg3wsglxamob5" path="res://audio/cardsoft.wav" id="18_l4m40"]
+[ext_resource type="AudioStream" uid="uid://bglpn7g7vpiit" path="res://audio/cardhard.wav" id="19_au1m8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ggjv0"]
+bg_color = Color(0, 0.352941, 0.831373, 1)
+
+[node name="Game" type="Node2D"]
+
+[node name="Board" type="CanvasLayer" parent="." node_paths=PackedStringArray("foundation", "freecells", "tableau")]
+follow_viewport_enabled = true
+script = ExtResource("1_61gtw")
+foundation = NodePath("Foundation")
+freecells = NodePath("FreeCells")
+tableau = NodePath("Tableau")
+
+[node name="Background" type="TextureRect" parent="Board"]
+self_modulate = Color(0, 0.25098, 0, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_85hxy")
+expand_mode = 1
+
+[node name="TopBar" type="HBoxContainer" parent="Board"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 63.0
+offset_bottom = 171.0
+grow_horizontal = 2
+
+[node name="DealNumber" type="VBoxContainer" parent="Board/TopBar"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/TopBar/DealNumber"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Deal nbr"
+horizontal_alignment = 1
+
+[node name="Number" type="Label" parent="Board/TopBar/DealNumber"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "123456"
+horizontal_alignment = 1
+script = ExtResource("4_igxoy")
+
+[node name="Stats" type="HBoxContainer" parent="Board/TopBar" node_paths=PackedStringArray("board")]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 30
+alignment = 1
+script = ExtResource("5_1ul02")
+board = NodePath("../..")
+
+[node name="MoveCounter" type="VBoxContainer" parent="Board/TopBar/Stats"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/TopBar/Stats/MoveCounter"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Moves"
+horizontal_alignment = 1
+
+[node name="Moves" type="Label" parent="Board/TopBar/Stats/MoveCounter"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 35
+text = "0"
+horizontal_alignment = 1
+
+[node name="Timer" type="VBoxContainer" parent="Board/TopBar/Stats"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/TopBar/Stats/Timer"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Time"
+horizontal_alignment = 1
+
+[node name="Time" type="Label" parent="Board/TopBar/Stats/Timer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "0:00"
+horizontal_alignment = 1
+
+[node name="Undo" type="TextureButton" parent="Board/TopBar"]
+clip_contents = true
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+texture_normal = ExtResource("6_6pe30")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("4_6cew4")
+
+[node name="BottomBar" type="HBoxContainer" parent="Board"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -113.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Settings" type="TextureButton" parent="Board/BottomBar" node_paths=PackedStringArray("settings_popup")]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 2
+texture_normal = ExtResource("7_t0b35")
+ignore_texture_size = true
+stretch_mode = 5
+script = ExtResource("6_00bmi")
+settings_popup = NodePath("../../Popups/SettingsPopup")
+
+[node name="Stats" type="Button" parent="Board/BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+theme = ExtResource("3_07em3")
+text = "Stats"
+
+[node name="Deal" type="Button" parent="Board/BottomBar" node_paths=PackedStringArray("deal_menu")]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme = ExtResource("3_07em3")
+text = "New Deal"
+script = ExtResource("10_dvi0k")
+deal_menu = NodePath("../../Menus/DealMenu")
+
+[node name="FreeCells" type="HBoxContainer" parent="Board"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -387.0
+offset_top = 180.0
+offset_right = -21.0
+offset_bottom = 304.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Cell1" type="TextureRect" parent="Board/FreeCells"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+
+[node name="Cell2" type="TextureRect" parent="Board/FreeCells"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+
+[node name="Cell3" type="TextureRect" parent="Board/FreeCells"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+
+[node name="Cell4" type="TextureRect" parent="Board/FreeCells"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+
+[node name="Foundation" type="HBoxContainer" parent="Board"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 21.5
+offset_top = 180.0
+offset_right = 388.5
+offset_bottom = 304.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Cell1" type="TextureRect" parent="Board/Foundation"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 1
+
+[node name="Cell2" type="TextureRect" parent="Board/Foundation"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 1
+
+[node name="Cell3" type="TextureRect" parent="Board/Foundation"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 1
+
+[node name="Cell4" type="TextureRect" parent="Board/Foundation"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 1
+
+[node name="Tableau" type="HBoxContainer" parent="Board"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 331.0
+offset_bottom = 455.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Cell1" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell2" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell3" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell4" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell5" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell6" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell7" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Cell8" type="TextureRect" parent="Board/Tableau"]
+custom_minimum_size = Vector2(88, 124)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_1maw1")
+expand_mode = 1
+script = ExtResource("2_xf0fn")
+type = 2
+
+[node name="Menus" type="Control" parent="Board"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DealMenu" type="Control" parent="Board/Menus"]
+z_index = 999
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_ohcwr")
+
+[node name="DealButtons" type="Control" parent="Board/Menus/DealMenu"]
+visible = false
+custom_minimum_size = Vector2(280, 145)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -371.0
+offset_top = -332.0
+offset_right = -51.0
+offset_bottom = -117.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Background" type="TextureRect" parent="Board/Menus/DealMenu/DealButtons"]
+self_modulate = Color(0.321569, 0.329412, 0.329412, 1)
+custom_minimum_size = Vector2(100, 80)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 0
+texture = ExtResource("2_85hxy")
+
+[node name="Buttons" type="VBoxContainer" parent="Board/Menus/DealMenu/DealButtons"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -159.0
+offset_top = -106.0
+offset_right = 159.0
+offset_bottom = 106.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ChallengeDeal" type="Button" parent="Board/Menus/DealMenu/DealButtons/Buttons"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Challenge deal"
+
+[node name="RandomDeal" type="Button" parent="Board/Menus/DealMenu/DealButtons/Buttons"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Random deal"
+
+[node name="CustomDeal" type="Button" parent="Board/Menus/DealMenu/DealButtons/Buttons"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Custom deal Number"
+
+[node name="RestartDeal" type="Button" parent="Board/Menus/DealMenu/DealButtons/Buttons"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Restart current deal"
+
+[node name="DealNumberPopup" type="Control" parent="Board/Menus/DealMenu"]
+visible = false
+custom_minimum_size = Vector2(500, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -100.0
+offset_right = 250.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="Board/Menus/DealMenu/DealNumberPopup"]
+self_modulate = Color(0.129412, 0.372549, 0.278431, 0.968627)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_85hxy")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Board/Menus/DealMenu/DealNumberPopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -137.5
+offset_top = -42.5
+offset_right = 137.5
+offset_bottom = 42.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Board/Menus/DealMenu/DealNumberPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Enter the deal number"
+
+[node name="LineEdit" type="LineEdit" parent="Board/Menus/DealMenu/DealNumberPopup/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 35
+alignment = 1
+
+[node name="Popups" type="Control" parent="Board"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="StatsPopup" type="Control" parent="Board/Popups" node_paths=PackedStringArray("games_started", "games_won", "shortest_win_deal", "shortest_win_moves", "fastest_win_deal", "fastest_win_time", "hard_game_progress", "challenge_level", "challenge_progress_bar", "challenge_progress_label")]
+visible = false
+z_index = 999
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_eq6we")
+games_started = NodePath("StatsLines/GamesStarted/Value")
+games_won = NodePath("StatsLines/GamesWon/Value")
+shortest_win_deal = NodePath("StatsLines/ShortestGame/ShortestGame/DealNbr")
+shortest_win_moves = NodePath("StatsLines/ShortestGame/ShortestGame/Moves")
+fastest_win_deal = NodePath("StatsLines/FastestGame/FastestGame/DealNbr")
+fastest_win_time = NodePath("StatsLines/FastestGame/FastestGame/Time")
+hard_game_progress = NodePath("StatsLines/HardGameProgress/Value")
+challenge_level = NodePath("StatsLines/ChallengeProgress/Values/Level")
+challenge_progress_bar = NodePath("StatsLines/ChallengeProgress/Values/Control/ProgressBar")
+challenge_progress_label = NodePath("StatsLines/ChallengeProgress/Values/Control/Progress")
+
+[node name="Background" type="TextureRect" parent="Board/Popups/StatsPopup"]
+self_modulate = Color(0, 0.109804, 0, 0.929412)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_85hxy")
+
+[node name="StatsLines" type="VBoxContainer" parent="Board/Popups/StatsPopup"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -236.5
+offset_top = -239.5
+offset_right = 236.5
+offset_bottom = 239.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GamesStarted" type="HBoxContainer" parent="Board/Popups/StatsPopup/StatsLines"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/Popups/StatsPopup/StatsLines/GamesStarted"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Games started"
+
+[node name="Value" type="Label" parent="Board/Popups/StatsPopup/StatsLines/GamesStarted"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_07em3")
+text = "10"
+
+[node name="GamesWon" type="HBoxContainer" parent="Board/Popups/StatsPopup/StatsLines"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/Popups/StatsPopup/StatsLines/GamesWon"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Games won"
+
+[node name="Value" type="Label" parent="Board/Popups/StatsPopup/StatsLines/GamesWon"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_07em3")
+text = "10"
+
+[node name="ShortestGame" type="VBoxContainer" parent="Board/Popups/StatsPopup/StatsLines"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/Popups/StatsPopup/StatsLines/ShortestGame"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Shortest win"
+
+[node name="ShortestGame" type="HBoxContainer" parent="Board/Popups/StatsPopup/StatsLines/ShortestGame"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 33
+
+[node name="DealNbr" type="Label" parent="Board/Popups/StatsPopup/StatsLines/ShortestGame/ShortestGame"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Game #2593"
+
+[node name="Moves" type="Label" parent="Board/Popups/StatsPopup/StatsLines/ShortestGame/ShortestGame"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "23 moves"
+
+[node name="FastestGame" type="VBoxContainer" parent="Board/Popups/StatsPopup/StatsLines"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/Popups/StatsPopup/StatsLines/FastestGame"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Fastest win"
+
+[node name="FastestGame" type="HBoxContainer" parent="Board/Popups/StatsPopup/StatsLines/FastestGame"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 33
+
+[node name="DealNbr" type="Label" parent="Board/Popups/StatsPopup/StatsLines/FastestGame/FastestGame"]
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Game #2593"
+
+[node name="Time" type="Label" parent="Board/Popups/StatsPopup/StatsLines/FastestGame/FastestGame"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "3:24"
+
+[node name="HardGameProgress" type="HBoxContainer" parent="Board/Popups/StatsPopup/StatsLines"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Board/Popups/StatsPopup/StatsLines/HardGameProgress"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Hard game progress"
+
+[node name="Value" type="Label" parent="Board/Popups/StatsPopup/StatsLines/HardGameProgress"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_07em3")
+text = "10/300"
+
+[node name="ChallengeProgress" type="VBoxContainer" parent="Board/Popups/StatsPopup/StatsLines"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Board/Popups/StatsPopup/StatsLines/ChallengeProgress"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Challenge progress"
+
+[node name="Values" type="HBoxContainer" parent="Board/Popups/StatsPopup/StatsLines/ChallengeProgress"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_constants/separation = 20
+
+[node name="Level" type="Label" parent="Board/Popups/StatsPopup/StatsLines/ChallengeProgress/Values"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "Level 12"
+horizontal_alignment = 2
+
+[node name="Control" type="Control" parent="Board/Popups/StatsPopup/StatsLines/ChallengeProgress/Values"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="Board/Popups/StatsPopup/StatsLines/ChallengeProgress/Values/Control"]
+self_modulate = Color(0.0901961, 0.286275, 1, 1)
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 10.0
+step = 1.0
+value = 2.0
+show_percentage = false
+
+[node name="Progress" type="Label" parent="Board/Popups/StatsPopup/StatsLines/ChallengeProgress/Values/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -31.5
+offset_top = -22.5
+offset_right = 31.5
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_07em3")
+theme_override_font_sizes/font_size = 30
+text = "2/10"
+
+[node name="SettingsPopup" type="Control" parent="Board/Popups" node_paths=PackedStringArray("difficulty", "max_deal_nbr", "autocomplete", "color_picker", "background")]
+visible = false
+z_index = 999
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("15_os37y")
+difficulty = NodePath("VBoxContainer/Difficulty/OptionButton")
+max_deal_nbr = NodePath("VBoxContainer/DealNbrs/LineEdit")
+autocomplete = NodePath("VBoxContainer/Autocomplete/OptionButton")
+color_picker = NodePath("VBoxContainer/Background/ColorPickerButton")
+background = NodePath("../../Background")
+
+[node name="Background" type="TextureRect" parent="Board/Popups/SettingsPopup"]
+self_modulate = Color(0, 0.109804, 0, 0.929412)
+top_level = true
+z_index = 999
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_85hxy")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Board/Popups/SettingsPopup"]
+z_index = 999
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Deck" type="HBoxContainer" parent="Board/Popups/SettingsPopup/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Deck" type="Label" parent="Board/Popups/SettingsPopup/VBoxContainer/Deck"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Deck"
+
+[node name="Difficulty" type="HBoxContainer" parent="Board/Popups/SettingsPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Difficulty" type="Label" parent="Board/Popups/SettingsPopup/VBoxContainer/Difficulty"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Difficulty"
+
+[node name="OptionButton" type="OptionButton" parent="Board/Popups/SettingsPopup/VBoxContainer/Difficulty"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_07em3")
+item_count = 3
+selected = 0
+popup/item_0/text = "Any"
+popup/item_0/id = 0
+popup/item_1/text = "Easy"
+popup/item_1/id = 1
+popup/item_2/text = "Hard"
+popup/item_2/id = 2
+
+[node name="DealNbrs" type="HBoxContainer" parent="Board/Popups/SettingsPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="Label" type="Label" parent="Board/Popups/SettingsPopup/VBoxContainer/DealNbrs"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Max deal nbr"
+
+[node name="LineEdit" type="LineEdit" parent="Board/Popups/SettingsPopup/VBoxContainer/DealNbrs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 35
+text = "32000"
+alignment = 2
+
+[node name="Autocomplete" type="HBoxContainer" parent="Board/Popups/SettingsPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Board/Popups/SettingsPopup/VBoxContainer/Autocomplete"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Auto-complete"
+
+[node name="OptionButton" type="OptionButton" parent="Board/Popups/SettingsPopup/VBoxContainer/Autocomplete"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("3_07em3")
+alignment = 2
+item_count = 4
+selected = 0
+popup/item_0/text = "Always"
+popup/item_0/id = 0
+popup/item_1/text = "On foundation move"
+popup/item_1/id = 1
+popup/item_2/text = "Only at end"
+popup/item_2/id = 2
+popup/item_3/text = "Never"
+popup/item_3/id = 4
+
+[node name="Background" type="HBoxContainer" parent="Board/Popups/SettingsPopup/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Board/Popups/SettingsPopup/VBoxContainer/Background"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Background"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Board/Popups/SettingsPopup/VBoxContainer/Background"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+edit_alpha = false
+
+[node name="Button" type="Button" parent="Board/Popups/SettingsPopup"]
+z_index = 999
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -55.0
+offset_top = -43.0
+offset_right = 55.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 40
+text = "Close"
+
+[node name="VictoryPopup" type="CenterContainer" parent="Board/Popups" node_paths=PackedStringArray("board")]
+visible = false
+z_index = 998
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("16_ifrha")
+board = NodePath("../..")
+
+[node name="Background" type="TextureRect" parent="Board/Popups/VictoryPopup"]
+self_modulate = Color(0.0784314, 0.4, 0.101961, 1)
+custom_minimum_size = Vector2(600, 230)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_85hxy")
+
+[node name="Content" type="VBoxContainer" parent="Board/Popups/VictoryPopup"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+
+[node name="Congrats" type="Label" parent="Board/Popups/VictoryPopup/Content"]
+custom_minimum_size = Vector2(600, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Congratulation, you won!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChallengeProgress" type="VBoxContainer" parent="Board/Popups/VictoryPopup/Content"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Title" type="Label" parent="Board/Popups/VictoryPopup/Content/ChallengeProgress"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Challenge progress"
+
+[node name="Progress" type="HBoxContainer" parent="Board/Popups/VictoryPopup/Content/ChallengeProgress"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Board/Popups/VictoryPopup/Content/ChallengeProgress/Progress"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_ggjv0")
+max_value = 5.0
+value = 1.1
+show_percentage = false
+
+[node name="Label" type="Label" parent="Board/Popups/VictoryPopup/Content/ChallengeProgress/Progress/ProgressBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -13.0
+offset_right = 20.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_07em3")
+text = "1/5"
+
+[node name="Level" type="Label" parent="Board/Popups/VictoryPopup/Content/ChallengeProgress/Progress"]
+layout_mode = 2
+theme = ExtResource("3_07em3")
+text = "Level 2"
+
+[node name="GameTimer" parent="Board" instance=ExtResource("16_mhao6")]
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="Revert" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("18_l4m40")
+
+[node name="Snap" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("19_au1m8")
+
+[node name="Foundation" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("19_au1m8")
+
+[connection signal="pressed" from="Board/TopBar/Undo" to="Board/TopBar/Undo" method="undo"]
+[connection signal="pressed" from="Board/BottomBar/Settings" to="Board/BottomBar/Settings" method="_on_pressed"]
+[connection signal="pressed" from="Board/BottomBar/Stats" to="Board/Popups/StatsPopup" method="open"]
+[connection signal="pressed" from="Board/BottomBar/Deal" to="Board/Menus/DealMenu" method="toggle_deal_buttons"]
+[connection signal="pressed" from="Board/Menus/DealMenu/DealButtons/Buttons/ChallengeDeal" to="Board/Menus/DealMenu" method="challenge_deal"]
+[connection signal="pressed" from="Board/Menus/DealMenu/DealButtons/Buttons/RandomDeal" to="Board/Menus/DealMenu" method="random_deal"]
+[connection signal="pressed" from="Board/Menus/DealMenu/DealButtons/Buttons/CustomDeal" to="Board/Menus/DealMenu" method="open_deal_number_popup"]
+[connection signal="pressed" from="Board/Menus/DealMenu/DealButtons/Buttons/RestartDeal" to="Board/Menus/DealMenu" method="redeal"]
+[connection signal="text_submitted" from="Board/Menus/DealMenu/DealNumberPopup/VBoxContainer/LineEdit" to="Board/Menus/DealMenu" method="custom_deal"]
+[connection signal="item_selected" from="Board/Popups/SettingsPopup/VBoxContainer/Difficulty/OptionButton" to="Board/Popups/SettingsPopup" method="on_difficulty_selected"]
+[connection signal="text_changed" from="Board/Popups/SettingsPopup/VBoxContainer/DealNbrs/LineEdit" to="Board/Popups/SettingsPopup" method="on_max_deal_nbr_changed"]
+[connection signal="item_selected" from="Board/Popups/SettingsPopup/VBoxContainer/Autocomplete/OptionButton" to="Board/Popups/SettingsPopup" method="on_autocomplete_selected"]
+[connection signal="color_changed" from="Board/Popups/SettingsPopup/VBoxContainer/Background/ColorPickerButton" to="Board/Popups/SettingsPopup" method="on_background_color_selected"]
+[connection signal="pressed" from="Board/Popups/SettingsPopup/Button" to="Board/Popups/SettingsPopup" method="close"]

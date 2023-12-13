@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dan5llmvjq3e8"]
+
+[ext_resource type="Script" path="res://game_timer.gd" id="1_bi228"]
+
+[node name="GameTimer" type="Node"]
+script = ExtResource("1_bi228")
