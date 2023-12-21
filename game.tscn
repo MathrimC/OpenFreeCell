@@ -700,6 +700,7 @@ theme_override_font_sizes/font_size = 30
 text = "2/10"
 
 [node name="SettingsPopup" type="Control" parent="Board/Popups" node_paths=PackedStringArray("difficulty", "max_deal_nbr", "autocomplete", "color_picker", "background")]
+visible = false
 z_index = 999
 custom_minimum_size = Vector2(400, 300)
 layout_mode = 1
