@@ -19,6 +19,7 @@ func _ready():
 	color_picker.color = background.self_modulate
 
 func open():
+	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
 	self.visible = true
 
 func close():
@@ -33,7 +34,6 @@ func on_max_deal_nbr_changed(_max_deal_nbr: String):
 	if nbr > 0:		
 		player_settings.max_deal_nbr = _max_deal_nbr as int
 		player_settings.player_settings_changed.emit()
-	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
 
 func on_autocomplete_selected(_auto_complete: int):
 	player_settings.auto_complete = _auto_complete as PlayerSettings.Autocomplete
