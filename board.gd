@@ -14,9 +14,11 @@ class CellInfo:
 	var cell_type: CellType
 	var cell: Button
 
+@export var test_win: bool = false
 @export var foundation: HBoxContainer
 @export var freecells: HBoxContainer
 @export var tableau: HBoxContainer
+@export var bottom_bar: HBoxContainer
 @onready var foundation_cells: Array[Node] = foundation.get_children()
 @onready var free_cells: Array[Node] = freecells.get_children()
 @onready var tableau_cells: Array[Node] = tableau.get_children()
@@ -24,7 +26,8 @@ class CellInfo:
 
 var packed_card = preload("res://card.tscn")
 var current_deal_nbr: int
-var is_challenge_deal: bool
+var deal_type: Deal.Type
+var deal_date: String
 var move_counter: int
 var game_start_time_ms: int
 var game_timer: GameTimer
@@ -32,10 +35,10 @@ var game_completed: bool
 var player_stats: PlayerStats
 var player_settings: PlayerSettings
 
-signal new_game_started(deal_nbr: int, is_challenge_deal: bool)
+signal new_game_started(deal_nbr: int, deal_type: Deal.Type)
 signal card_moved(card: Card, source: Cell, target: Cell)
 signal move_counter_changed(move_counter: int)
-signal game_won(deal_nbr: int, moves: int, time: int, is_challenge_deal: bool)
+signal game_won(deal_nbr: int, moves: int, time: int, deal_type: Deal.Type, date: String)
 
 func _ready():
 	var player_profile = PlayerProfile.get_player_profile()
@@ -44,11 +47,13 @@ func _ready():
 	player_stats.monitor_player_stats(self)
 	card_moved.connect(on_card_moved)
 
+func get_tableau_height() -> int:
+	return floor(bottom_bar.global_position.y - tableau.global_position.y) + bottom_bar.size.y
 
-func on_cards_dealt(_deal_nbr: int, _is_challenge_deal: bool):
+func on_cards_dealt(_deal_nbr: int, _deal_type: Deal.Type, _date: String = ""):
 	current_deal_nbr = _deal_nbr
-	is_challenge_deal = _is_challenge_deal
-						
+	deal_type = _deal_type
+	deal_date = _date
 
 	game_completed = false
 	move_counter = 0
@@ -56,13 +61,8 @@ func on_cards_dealt(_deal_nbr: int, _is_challenge_deal: bool):
 	self.add_child(game_timer)
 	game_timer.start_timer()
 
-	new_game_started.emit(_deal_nbr, _is_challenge_deal)
+	new_game_started.emit(_deal_nbr, _deal_type)
 
-
-func merge_lists():
-	print("# before duplicate check: %s" % easy_deal_nbrs.size())
-	print("list numbers: %s" % [easy_deal_nbrs])
-	print("# hard deal numbers: %s" % [easy_deal_nbrs.size()])
 
 func remove_duplicate_numbers(list: Array[int]) -> Array[int]:
 	list.sort()
@@ -209,15 +209,19 @@ func get_moveable_cascade_size(target_cell: Cell) -> int:
 
 func check_game_completed():
 	for child in foundation_cells:
-		if child.cards.size() < 13:
+		if !test_win && child.cards.size() < 13:
 			return
 
 	game_timer.stop_timer()
 	game_completed = true
 
-	if is_challenge_deal:
-		Challenge.completed_challenge_deal()
-	game_won.emit(current_deal_nbr, move_counter, game_timer.game_time_ms / 1000, is_challenge_deal) 
+	match deal_type:
+		Deal.Type.CHALLENGE:
+			Challenge.completed_challenge_deal()
+		Deal.Type.DAILY:
+			player_stats.daily_deal_completed(deal_date)
+	
+	game_won.emit(current_deal_nbr, move_counter, floori(game_timer.game_time_ms / 1000.0), deal_type, deal_date) 
 
 
 func _get_matching_child_horizontal(parent: Node, card: Card) -> Cell:
@@ -225,4 +229,3 @@ func _get_matching_child_horizontal(parent: Node, card: Card) -> Cell:
 		if child.global_position.x < card.global_position.x + (card.size.x/2) && child.global_position.x + child.size.x > card.global_position.x + (card.size.x/2):
 			return child
 	return null
-

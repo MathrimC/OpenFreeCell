@@ -15,7 +15,7 @@ func _ready():
 func on_move_counter_changed(move_counter: int):
 	move_label.text = "%s" % move_counter
 
-func on_new_game_started(_game_nbr: int, _is_challenge_deal: bool):
+func on_new_game_started(_game_nbr: int, _deal_type: Deal.Type):
 	game_timer = board.game_timer
 	game_counter += 1
 	move_label.text = "0"

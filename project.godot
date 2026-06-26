@@ -8,11 +8,19 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Open FreeCell"
+config/version="1.4.4"
 run/main_scene="res://game.tscn"
-config/features=PackedStringArray("4.2", "Mobile")
+config/features=PackedStringArray("4.7", "Mobile")
+boot_splash/bg_color=Color(0, 0.2509804, 0, 1)
+boot_splash/stretch_mode=0
+boot_splash/image="uid://4rgw52txb53o"
 config/icon="res://artwork/icons/icon.png"
 
 [display]
