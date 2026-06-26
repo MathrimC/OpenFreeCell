@@ -1,5 +1,5 @@
 class_name Undo
-extends TextureButton
+extends Button
 
 var undo_stack: Array[Move]
 @onready var board = $/root/Game/Board

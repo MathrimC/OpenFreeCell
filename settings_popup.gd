@@ -1,6 +1,7 @@
 class_name SettingsPopup
 extends Control
 
+@export var version_label: RichTextLabel
 @export var difficulty: OptionButton
 @export var max_deal_nbr: LineEdit
 @export var autocomplete: OptionButton 
@@ -17,6 +18,17 @@ func _ready():
 	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
 	autocomplete.selected = player_settings.auto_complete
 	color_picker.color = background.self_modulate
+	version_label.text = "[url]Open FreeCell v%s[/url]" % ProjectSettings.get_setting("application/config/version", "")
+
+func on_version_clicked(_meta: Variant) -> void:
+	_open_github_url()
+
+func on_github_pressed() -> void:
+	_open_github_url()
+
+func _open_github_url() -> void:
+	OS.shell_open("https://github.com/MathrimC/OpenFreeCell")
+
 
 func open():
 	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr

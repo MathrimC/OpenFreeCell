@@ -3,12 +3,28 @@ extends TextureRect
 
 enum CellType {FreeCell, FoundationCell, TableauCell}
 
-const cascade_space = 36
+# const cascade_space = 36
+const DEFAULT_CASCADE_SPACE = 36
 
 @export var type: CellType
-var cards: Array[Card] 
+var cards: Array[Card]
+var cascade_space: int = DEFAULT_CASCADE_SPACE
 
 @onready var board: Board = $/root/Game/Board
+
+
+func refresh_cascade_space() -> void:
+	if type != CellType.TableauCell:
+		return
+	var new_space := DEFAULT_CASCADE_SPACE
+	if cards.size() > 7:
+		new_space = min(DEFAULT_CASCADE_SPACE, floori((board.get_tableau_height() - cards[-1].size.y) / (cards.size() - 1)))
+	if new_space != cascade_space:
+		cascade_space = new_space
+	for i in cards.size():
+		var card := cards[i]
+		card.position = Vector2(0, i * cascade_space)
+
 
 func add_card(card: Card, automove: bool = false):
 	while card != null:
@@ -30,9 +46,11 @@ func add_card(card: Card, automove: bool = false):
 
 	if type == CellType.FoundationCell:
 		board.check_game_completed()
-	
+
+
 func automove_complete(card: Card):
 	card.z_index = cards.find(card) + 1
+	refresh_cascade_space()
 
 
 func remove_card(card: Card):
@@ -49,6 +67,7 @@ func remove_card(card: Card):
 
 	if !cards.is_empty():
 		cards.back().child = null
+	refresh_cascade_space()
 
 func clear():
 	for card in cards:
@@ -95,4 +114,3 @@ func get_next_rank() -> int:
 		return 1
 	else:
 		return cards[-1].rank + 1
-
