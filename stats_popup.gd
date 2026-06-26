@@ -2,6 +2,8 @@ extends Control
 
 @export var games_started: Label
 @export var games_won: Label
+@export var daily_deals_won: Label
+@export var daily_deal_streak: Label
 @export var shortest_win_deal: Label
 @export var shortest_win_moves: Label
 @export var fastest_win_deal: Label
@@ -23,8 +25,11 @@ func close():
 
 func refresh_stats():
 	var stats = PlayerProfile.get_player_profile().player_stats
+	stats.refresh_daily_streak()
 	games_started.text = "%s" % stats.games_started
 	games_won.text = "%s" % stats.games_won
+	daily_deals_won.text = "%s" % stats.daily_deals_won
+	daily_deal_streak.text = "%s" % stats.daily_deal_streak
 	shortest_win_deal.text = "Deal #%s" % stats.shortest_deal_nbr
 	shortest_win_moves.text = "%s moves" % stats.shortest_game_moves
 	fastest_win_deal.text = "Deal #%s" % stats.fastest_deal_nbr

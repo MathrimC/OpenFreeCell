@@ -1,6 +1,6 @@
 extends Button
 
-@export var deal_menu: Control
+@export var deal_popup: DealPopup
 
 func _on_pressed():
-	deal_menu.show_deal_buttons()
+	deal_popup.show_deal_buttons()

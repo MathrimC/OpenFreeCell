@@ -2,33 +2,33 @@ extends CenterContainer
 
 @export var board: Board
 
-@onready var background = $Background
-@onready var congrats = $Content/Congrats
-@onready var challenge_progress = $Content/ChallengeProgress
-@onready var progress_bar: ProgressBar = $Content/ChallengeProgress/Progress/ProgressBar
-@onready var progress_label: Label = progress_bar.get_node("Label")
-@onready var level_label: Label = challenge_progress.get_node("Progress/Level")
+@export var congrats: Label
+@export var challenge_progress: Container
+@export var progress_bar: ProgressBar
+@export var progress_label: Label
+@export var level_label: Label
+@export var streak: Label
 
 func _ready():
 	self.visible = false
 	challenge_progress.visible = false
 	board.game_won.connect(on_game_won)
 
-func on_game_won(_game_nbr: int, _moves: int, _time: int, is_challenge_game: bool):
-
-	if is_challenge_game:
-		_advance_progress_bar()
-
-	challenge_progress.visible = is_challenge_game
-
-	var background_size = Vector2(congrats.size.x, 0)
-	background_size.y = congrats.size.y if !is_challenge_game else congrats.size.y + challenge_progress.size.y
-	background.custom_minimum_size = background_size
-	self.visible = true
+func on_game_won(_game_nbr: int, _moves: int, _time: int, _deal_type: Deal.Type, _date: String):
+	challenge_progress.hide()
+	streak.hide()
+	match _deal_type:
+		Deal.Type.CHALLENGE:
+			_advance_progress_bar()
+			challenge_progress.show()
+		Deal.Type.DAILY:
+			streak.text = "%d day streak" % board.player_stats.daily_deal_streak
+			streak.show()
+	self.show()
 
 func _input(event):
 	if event is InputEventMouseButton:
-		self.visible = false
+		self.hide()
 
 func _advance_progress_bar():
 	var target_progress: int = Challenge.get_challenge_lvl_progress()
@@ -62,4 +62,3 @@ func _advance_progress_bar():
 		level_label.text = "Level %s" % (target_level + 1)
 	
 	
-
