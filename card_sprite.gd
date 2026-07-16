@@ -13,5 +13,3 @@ func set_card_sprite(type: Type, suit: Card.Suit, rank: int):
 			self.scale = Vector2(scaling, scaling)
 		_:
 			printerr("Unsupported card sprite type")
-
-

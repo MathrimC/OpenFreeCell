@@ -29,7 +29,6 @@ func on_github_pressed() -> void:
 func _open_github_url() -> void:
 	OS.shell_open("https://github.com/MathrimC/OpenFreeCell")
 
-
 func open():
 	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
 	self.visible = true
@@ -55,3 +54,10 @@ func on_background_color_selected(color: Color):
 	player_settings.background_color = color
 	background.self_modulate = color
 	player_settings.player_settings_changed.emit()
+	
+func _on_mute_button_toggled(toggled_on: bool) -> void:
+	player_settings.sound_enabled = !toggled_on
+	AudioServer.set_bus_mute(
+	AudioServer.get_bus_index("SFX"),
+	!player_settings.sound_enabled)
+	

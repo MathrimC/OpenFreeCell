@@ -8,6 +8,7 @@ enum Autocomplete {ALWAYS, ON_FOUNDATION_MOVE, ONLY_AT_END, ASK_AT_END, NEVER}
 @export var max_deal_nbr: int
 @export var auto_complete: Autocomplete
 @export var background_color: Color
+@export var sound_enabled : bool
 
 signal player_settings_changed()
 
@@ -16,3 +17,4 @@ func _init():
 	max_deal_nbr = 1000000
 	auto_complete = Autocomplete.ON_FOUNDATION_MOVE
 	background_color = Color(0, 0.251, 0) 
+	sound_enabled = true
