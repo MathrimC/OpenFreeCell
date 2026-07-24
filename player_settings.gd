@@ -8,7 +8,7 @@ enum Autocomplete {ALWAYS, ON_FOUNDATION_MOVE, ONLY_AT_END, ASK_AT_END, NEVER}
 @export var max_deal_nbr: int
 @export var auto_complete: Autocomplete
 @export var background_color: Color
-@export var sound_enabled : bool
+@export var sound_enabled : bool = true
 
 signal player_settings_changed()
 

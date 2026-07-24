@@ -741,7 +741,7 @@ theme = ExtResource("3_07em3")
 theme_override_font_sizes/font_size = 30
 text = "2/10"
 
-[node name="SettingsPopup" type="Control" parent="Board/Popups" unique_id=82594573 node_paths=PackedStringArray("version_label", "difficulty", "max_deal_nbr", "autocomplete", "color_picker", "background")]
+[node name="SettingsPopup" type="Control" parent="Board/Popups" unique_id=82594573 node_paths=PackedStringArray("version_label", "difficulty", "max_deal_nbr", "autocomplete", "color_picker", "mute_button", "background")]
 custom_minimum_size = Vector2(400, 300)
 layout_mode = 1
 anchors_preset = 15
@@ -755,6 +755,7 @@ difficulty = NodePath("PanelContainer/MarginContainer/VBoxContainer/Difficulty/O
 max_deal_nbr = NodePath("PanelContainer/MarginContainer/VBoxContainer/DealNbrs/LineEdit")
 autocomplete = NodePath("PanelContainer/MarginContainer/VBoxContainer/Autocomplete/OptionButton")
 color_picker = NodePath("PanelContainer/MarginContainer/VBoxContainer/Background/ColorPickerButton")
+mute_button = NodePath("PanelContainer/MarginContainer/VBoxContainer/Mute/MuteButton")
 background = NodePath("../../Background")
 
 [node name="PanelContainer" type="PanelContainer" parent="Board/Popups/SettingsPopup" unique_id=704157507]
