@@ -6,6 +6,8 @@ extends Control
 @export var max_deal_nbr: LineEdit
 @export var autocomplete: OptionButton 
 @export var color_picker: ColorPickerButton
+@export var mute_button: TextureButton
+
 
 @export var background: TextureRect
 
@@ -17,6 +19,7 @@ func _ready():
 	difficulty.selected = player_settings.difficulty
 	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
 	autocomplete.selected = player_settings.auto_complete
+	mute_button.button_pressed = !player_settings.sound_enabled
 	color_picker.color = background.self_modulate
 	version_label.text = "[url]Open FreeCell v%s[/url]" % ProjectSettings.get_setting("application/config/version", "")
 
@@ -28,7 +31,6 @@ func on_github_pressed() -> void:
 
 func _open_github_url() -> void:
 	OS.shell_open("https://github.com/MathrimC/OpenFreeCell")
-
 
 func open():
 	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
@@ -55,3 +57,11 @@ func on_background_color_selected(color: Color):
 	player_settings.background_color = color
 	background.self_modulate = color
 	player_settings.player_settings_changed.emit()
+	
+func _on_mute_button_toggled(toggled_on: bool) -> void:
+	player_settings.sound_enabled = !toggled_on
+	AudioServer.set_bus_mute(
+	AudioServer.get_bus_index("SFX"),
+	!player_settings.sound_enabled)
+	player_settings.player_settings_changed.emit()
+	

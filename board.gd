@@ -46,6 +46,9 @@ func _ready():
 	player_settings = player_profile.player_settings
 	player_stats.monitor_player_stats(self)
 	card_moved.connect(on_card_moved)
+	AudioServer.set_bus_mute(
+	AudioServer.get_bus_index("SFX"),
+	!player_settings.sound_enabled)
 
 func get_tableau_height() -> int:
 	return floor(bottom_bar.global_position.y - tableau.global_position.y) + bottom_bar.size.y

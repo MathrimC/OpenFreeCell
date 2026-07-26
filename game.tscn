@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://cxjvpp7beitcw" path="res://victory_popup.gd" id="16_ifrha"]
 [ext_resource type="PackedScene" uid="uid://dan5llmvjq3e8" path="res://game_timer.tscn" id="16_mhao6"]
 [ext_resource type="Texture2D" uid="uid://dign64bcl4bqq" path="res://artwork/icons/GitHub_Invertocat_White.png" id="17_hb5m1"]
+[ext_resource type="Texture2D" uid="uid://bmxv631ppqehr" path="res://artwork/icons/muteIcon.png" id="17_x5p1p"]
 [ext_resource type="AudioStream" uid="uid://bg3wsglxamob5" path="res://audio/cardsoft.wav" id="18_l4m40"]
 [ext_resource type="AudioStream" uid="uid://bglpn7g7vpiit" path="res://audio/cardhard.wav" id="19_au1m8"]
 
@@ -27,6 +28,14 @@ bg_color = Color(0, 0.10980392, 0, 0.92941177)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hb5m1"]
 bg_color = Color(0, 0.10980392, 0, 0.92941177)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hb5m1"]
+atlas = ExtResource("17_x5p1p")
+region = Rect2(230, 0, 230, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5p1p"]
+atlas = ExtResource("17_x5p1p")
+region = Rect2(0, 0, 230, 200)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e36ub"]
 bg_color = Color(0.22745098, 0.26666668, 0.34117648, 1)
@@ -732,7 +741,7 @@ theme = ExtResource("3_07em3")
 theme_override_font_sizes/font_size = 30
 text = "2/10"
 
-[node name="SettingsPopup" type="Control" parent="Board/Popups" unique_id=82594573 node_paths=PackedStringArray("version_label", "difficulty", "max_deal_nbr", "autocomplete", "color_picker", "background")]
+[node name="SettingsPopup" type="Control" parent="Board/Popups" unique_id=82594573 node_paths=PackedStringArray("version_label", "difficulty", "max_deal_nbr", "autocomplete", "color_picker", "mute_button", "background")]
 custom_minimum_size = Vector2(400, 300)
 layout_mode = 1
 anchors_preset = 15
@@ -746,6 +755,7 @@ difficulty = NodePath("PanelContainer/MarginContainer/VBoxContainer/Difficulty/O
 max_deal_nbr = NodePath("PanelContainer/MarginContainer/VBoxContainer/DealNbrs/LineEdit")
 autocomplete = NodePath("PanelContainer/MarginContainer/VBoxContainer/Autocomplete/OptionButton")
 color_picker = NodePath("PanelContainer/MarginContainer/VBoxContainer/Background/ColorPickerButton")
+mute_button = NodePath("PanelContainer/MarginContainer/VBoxContainer/Mute/MuteButton")
 background = NodePath("../../Background")
 
 [node name="PanelContainer" type="PanelContainer" parent="Board/Popups/SettingsPopup" unique_id=704157507]
@@ -859,6 +869,27 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 edit_alpha = false
+
+[node name="Mute" type="HBoxContainer" parent="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer" unique_id=1316437320]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer/Mute" unique_id=1284368629]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 40
+text = "Sound"
+
+[node name="MuteButton" type="TextureButton" parent="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer/Mute" unique_id=529660331]
+custom_minimum_size = Vector2(90, 90)
+layout_mode = 2
+theme = ExtResource("3_07em3")
+theme_type_variation = &"ToggleButton"
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_hb5m1")
+texture_pressed = SubResource("AtlasTexture_x5p1p")
+ignore_texture_size = true
+stretch_mode = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Board/Popups/SettingsPopup/PanelContainer/MarginContainer" unique_id=823010276]
 layout_mode = 2
@@ -998,12 +1029,15 @@ texture = ExtResource("2_85hxy")
 
 [node name="Revert" type="AudioStreamPlayer" parent="Audio" unique_id=149931070]
 stream = ExtResource("18_l4m40")
+bus = &"SFX"
 
 [node name="Snap" type="AudioStreamPlayer" parent="Audio" unique_id=212003937]
 stream = ExtResource("19_au1m8")
+bus = &"SFX"
 
 [node name="Foundation" type="AudioStreamPlayer" parent="Audio" unique_id=1902384243]
 stream = ExtResource("19_au1m8")
+bus = &"SFX"
 
 [connection signal="pressed" from="Board/MarginContainer/VBoxContainer/MarginContainer/Undo" to="Board/MarginContainer/VBoxContainer/MarginContainer/Undo" method="undo"]
 [connection signal="pressed" from="Board/MarginContainer/VBoxContainer/MarginContainer2/BottomBar/Deal" to="Board/MarginContainer/VBoxContainer/MarginContainer2/BottomBar/Deal" method="_on_pressed"]
@@ -1019,6 +1053,7 @@ stream = ExtResource("19_au1m8")
 [connection signal="text_changed" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer/DealNbrs/LineEdit" to="Board/Popups/SettingsPopup" method="on_max_deal_nbr_changed"]
 [connection signal="item_selected" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer/Autocomplete/OptionButton" to="Board/Popups/SettingsPopup" method="on_autocomplete_selected"]
 [connection signal="color_changed" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer/Background/ColorPickerButton" to="Board/Popups/SettingsPopup" method="on_background_color_selected"]
+[connection signal="toggled" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/VBoxContainer/Mute/MuteButton" to="Board/Popups/SettingsPopup" method="_on_mute_button_toggled"]
 [connection signal="meta_clicked" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/HBoxContainer/Version" to="Board/Popups/SettingsPopup" method="on_version_clicked"]
 [connection signal="pressed" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/HBoxContainer/Github" to="Board/Popups/SettingsPopup" method="on_github_pressed"]
 [connection signal="pressed" from="Board/Popups/SettingsPopup/PanelContainer/MarginContainer/Button" to="Board/Popups/SettingsPopup" method="close"]

@@ -83,4 +83,3 @@ static func _deal(board: Board, deal_nbr: int):
 
 		column = (column + 1) % board.tableau_cells.size()
 		cards_left -= 1	
-
