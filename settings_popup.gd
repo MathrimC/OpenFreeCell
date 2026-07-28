@@ -8,7 +8,6 @@ extends Control
 @export var color_picker: ColorPickerButton
 @export var mute_button: TextureButton
 
-
 @export var background: TextureRect
 
 var player_settings: PlayerSettings
@@ -20,7 +19,7 @@ func _ready():
 	max_deal_nbr.text = "%s" % player_settings.max_deal_nbr
 	autocomplete.selected = player_settings.auto_complete
 	mute_button.button_pressed = !player_settings.sound_enabled
-	color_picker.color = background.self_modulate
+	color_picker.color = player_settings.background_color
 	version_label.text = "[url]Open FreeCell v%s[/url]" % ProjectSettings.get_setting("application/config/version", "")
 
 func on_version_clicked(_meta: Variant) -> void:
