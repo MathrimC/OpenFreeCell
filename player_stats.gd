@@ -39,7 +39,7 @@ func on_game_won(deal_nbr: int, moves: int, time_s: int, _deal_type: Deal.Type, 
 	if time_s < fastest_game_time_s || fastest_game_time_s == 0:
 		fastest_deal_nbr = deal_nbr
 		fastest_game_time_s = time_s
-	if Board.hard_deal_nbrs.has(deal_nbr) && !hard_deals_won.has(deal_nbr):
+	if Deal.hard_deal_nbrs.has(deal_nbr) && !hard_deals_won.has(deal_nbr):
 		hard_deals_won.append(deal_nbr)
 	player_stats_changed.emit()
 

@@ -45,13 +45,14 @@ bg_color = Color(0, 0.352941, 0.831373, 1)
 
 [node name="Game" type="Node" unique_id=97224439]
 
-[node name="Board" type="CanvasLayer" parent="." unique_id=1133915942 node_paths=PackedStringArray("foundation", "freecells", "tableau", "bottom_bar")]
+[node name="Board" type="CanvasLayer" parent="." unique_id=1133915942 node_paths=PackedStringArray("foundation", "freecells", "tableau", "bottom_bar", "background")]
 follow_viewport_enabled = true
 script = ExtResource("1_61gtw")
 foundation = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Foundation")
 freecells = NodePath("MarginContainer/VBoxContainer/HBoxContainer/FreeCells")
 tableau = NodePath("MarginContainer/VBoxContainer/Tableau")
 bottom_bar = NodePath("MarginContainer/VBoxContainer/MarginContainer2/BottomBar")
+background = NodePath("Background")
 
 [node name="Background" type="TextureRect" parent="Board" unique_id=1158677669]
 self_modulate = Color(0, 0.25098, 0, 1)
@@ -742,6 +743,7 @@ theme_override_font_sizes/font_size = 30
 text = "2/10"
 
 [node name="SettingsPopup" type="Control" parent="Board/Popups" unique_id=82594573 node_paths=PackedStringArray("version_label", "difficulty", "max_deal_nbr", "autocomplete", "color_picker", "mute_button", "background")]
+visible = false
 custom_minimum_size = Vector2(400, 300)
 layout_mode = 1
 anchors_preset = 15
@@ -901,7 +903,7 @@ alignment = 2
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "[url]OpenFreecell v1.4.5[/url]"
+text = "[url]OpenFreecell v?.?.?[/url]"
 fit_content = true
 autowrap_mode = 0
 horizontal_alignment = 1
